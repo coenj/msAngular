@@ -1,5 +1,6 @@
 
 import 'rxjs/add/operator/toPromise';
+import { Observable } from 'rxjs';
 import { Http, Response } from '@angular/http';
 import { Component } from '@angular/core';
 
@@ -10,10 +11,15 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   public myIP: string;
-  constructor(private http: Http) {
-    this.http.get('http://httpbin.org/ip')
-      .toPromise()
-      .then(response => this.myIP = response.json().origin)
-      .catch(error => console.log(error));
+  private getIPAddress(): Observable<Response> {
+    return this.http.get('http://httpbin.org/ip');
   }
+  constructor(private http: Http) {
+    this.getIPAddress()
+      .subscribe(
+      ipdata => this.myIP = ipdata.json().origin 
+      );
+  }
+
+
 }
